@@ -58,11 +58,11 @@ S57-19,Cory Littleton,Player,,,,,,,,,,,,,,
 S58-19,Alec Ogletree,Player,,,,,,,,,,,,,,
 S59-19,Nigel Bradham,Player,,,,,,,,,,,,,,
 S60-19,Bradley McDougald,Player,,,,,,,,,,,,,,
-S61-19,Play,Play,,,,,,,,0,1,Run Left,Run Left / Run Middle,,,,
-S62-19,Play,Play,,,,,,,,3,1,Run Left,Run Left / Run Right,,,,
-S63-19,Play,Play,,,,,,,,9,1,Run Left,Long Pass,,,,
-S64-19,Play,Play,,,,,,,,5,1,Run Left,Short Pass,,,,
-S65-19,Play,Play,,,,,,,,1,1,Run Middle,Run Left / Run Middle,,,,
+S61-19,Play,Play,,,,,,,0,1,Run Left,Run Left / Run Middle,,,,
+S62-19,Play,Play,,,,,,,3,1,Run Left,Run Left / Run Right,,,,
+S63-19,Play,Play,,,,,,,9,1,Run Left,Long Pass,,,,
+S64-19,Play,Play,,,,,,,5,1,Run Left,Short Pass,,,,
+S65-19,Play,Play,,,,,,,1,1,Run Middle,Run Left / Run Middle,,,,
 S66-19,Play,Play,,,,,,,,,,,,,,
 S67-19,Play,Play,,,,,,,,,,,,,,
 S68-19,Play,Play,,,,,,,,,,,,,,
@@ -78,16 +78,16 @@ S77-19,Play,Play,,,,,,,,,,,,,,
 S78-19,Play,Play,,,,,,,,,,,,,,
 S79-19,Play,Play,,,,,,,,,,,,,,
 S80-19,Play,Play,,,,,,,,,,,,,,
-S81-19,Draw Offsides,Action,,,,,,,,,,,,Offense,Replay the Down. Gain 5 yards.,Play only during On Field Adjustments.
-S82-19,First Down,Action,,,,,,,,,,,,Offense,If you would gain 30 yards or more on your next play instead gain 10 yards it becomes first down and Energize all players on the field.,Play prior to selecting a play.
-S83-19,Screen Pass,Action,,,,,,,,,,,,Offense,Your current play becomes a sHort Pass: 15 (0-9).,Play only during On Field Adjustments if you called a Run play.
-S84-19,False Start,Action,,,,,,,,,,,,,,
-S85-19,Run Blitz,Action,,,,,,,,,,,,,,
-S86-19,Sack,Action,,,,,,,,,,,,Defense,Determine Grit value.  The offense loses 10 yards instead of the yards gained or lost on the play if the Grit is 4-5. (This may result in a loss of yards on the play. X = 0),Play only during On Field Adjustments.
-S87-19,Audible,Action,,,,,,,,,,,,,,
-S88-19,Energize,Action,,,,,,,,,,,,,,
-S89-19,Exhaust,Action,,,,,,,,,,,,,,
-S90-19,Outthink,Action,,,,,,,,,,,,,,
+S81-19,Draw Offsides,Action,,,,,,,,,,,Offense,Replay the Down. Gain 5 yards.,Play only during On Field Adjustments.
+S82-19,First Down,Action,,,,,,,,,,,Offense,If you would gain 30 yards or more on your next play instead gain 10 yards it becomes first down and Energize all players on the field.,Play prior to selecting a play.
+S83-19,Screen Pass,Action,,,,,,,,,,,Offense,Your current play becomes a sHort Pass: 15 (0-9).,Play only during On Field Adjustments if you called a Run play.
+S84-19,False Start,Action,,,,,,,,,,,,,
+S85-19,Run Blitz,Action,,,,,,,,,,,,,
+S86-19,Sack,Action,,,,,,,,,,,Defense,Determine Grit value.  The offense loses 10 yards instead of the yards gained or lost on the play if the Grit is 4-5. (This may result in a loss of yards on the play. X = 0),Play only during On Field Adjustments.
+S87-19,Audible,Action,,,,,,,,,,,,,
+S88-19,Energize,Action,,,,,,,,,,,,,
+S89-19,Exhaust,Action,,,,,,,,,,,,,
+S90-19,Outthink,Action,,,,,,,,,,,,,
 C1-19,Budda Baker,Player,,,,,,,,,,,,,,
 C2-19,Takkarist McKinley,Player,,,,,,,,,,,,,,
 C3-19,Damontae Kazee,Player,,,,,,,,,,,,,,

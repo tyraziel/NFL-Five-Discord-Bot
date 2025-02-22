@@ -57,7 +57,7 @@ intents.message_content = True
 
 botCache = BotCache()
 
-bot = commands.Bot(command_prefix=['^'], intents=intents) #command_prefix can be one item - i.e. '!' or a list - i.e. ['!','#','$']
+bot = commands.Bot(command_prefix=['!', '^'], intents=intents) #command_prefix can be one item - i.e. '!' or a list - i.e. ['!','#','$']
 
 card_fetch_pattern = re.compile("\[\[(\w[\w'\- ]*)\]\]", re.IGNORECASE | re.MULTILINE)
 card_fetch_pattern_2 = re.compile("!(\w[\w'\- ]*)!", re.IGNORECASE | re.MULTILINE)
@@ -168,16 +168,16 @@ async def on_message(message):
                         the_card_special_text = the_results[0][10]
                         #the_card_ = the_results[0][]
 
-                        the_strength = the_results[0][12]
-                        the_time_units = the_results[0][13]
+                        the_strength = the_results[0][11]
+                        the_time_units = the_results[0][12]
 
-                        the_offensive_play = the_results[0][14]
-                        the_defensive_play = the_results[0][15]
+                        the_offensive_play = the_results[0][13]
+                        the_defensive_play = the_results[0][14]
 
-                        the_card_sub_type = the_results[0][16]
+                        the_card_sub_type = the_results[0][15]
 
-                        the_card_effect = the_results[0][17]
-                        the_card_timing = the_results[0][18]
+                        the_card_effect = the_results[0][16]
+                        the_card_timing = the_results[0][17]
 
                         the_card_type = the_results[0][20]
                         the_card_rarity = the_results[0][23]

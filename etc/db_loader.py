@@ -59,6 +59,8 @@ for set_postfix in set_postfixes:
             matches = rarity_pattern.match(the_card_set_number)
             the_card_rarity = matches.group()
             the_rating = row[3] #Player rating (player card only)
+            if the_rating == "":
+                the_rating = 0
             the_team = row[4] #NFL Team player is on (player card only)
             the_position = row[5] #QB/RB/DB etc (player card only)
             the_side = row[6] #Offense / Defense (player card only)
