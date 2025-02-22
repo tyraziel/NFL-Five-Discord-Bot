@@ -152,7 +152,7 @@ async def on_message(message):
                     logger.info(f"Searching for Card: {card_to_query} from set {the_card_set_short_name}")
 
                     #First search should be set-card#
-                    results = db_cur.execute("SELECT *, card_effect, card_timing FROM cards LEFT OUTER JOIN card_types on cards.card_type_id = card_types.card_type_id LEFT OUTER JOIN rarity on cards.rarity_id = rarity.rarity_id LEFT OUTER JOIN sets on cards.set_id = sets.set_id where card_set_number = ? COLLATE NOCASE and sets.set_short_name = ? COLLATE NOCASE", [card_to_query, the_card_set_short_name])
+                    results = db_cur.execute("SELECT * FROM cards LEFT OUTER JOIN card_types on cards.card_type_id = card_types.card_type_id LEFT OUTER JOIN rarity on cards.rarity_id = rarity.rarity_id LEFT OUTER JOIN sets on cards.set_id = sets.set_id where card_set_number = ? COLLATE NOCASE and sets.set_short_name = ? COLLATE NOCASE", [card_to_query, the_card_set_short_name])
 
                     the_results = results.fetchall()
 
@@ -242,18 +242,42 @@ async def on_message(message):
                             
                     else:
                         logger.info(f"No results for Card Search: {card_to_search}")
-
-                        #### TRY VIA THE PLAYER NAME
-                        #results = db_cur.execute("SELECT * FROM cards LEFT OUTER JOIN card_types on cards.card_type_id = card_types.card_type_id LEFT OUTER JOIN beast_types on cards.beast_type_id = beast_types.beast_type_id LEFT OUTER JOIN sets on cards.set_id = sets.set_id where card_name = ? COLLATE NOCASE", [card_to_search])
-
                         await message.channel.send(f"No card found by the name of '{card_to_search}'")
                 else:
                     logger.info(f"Set {the_card_set_short_name} does not exist.")
                     await message.channel.send(f"Set with a short name of {the_card_set_short_name} does not exist.")
             else:
-                logger.info(f"Malformed request for Card Search: {card_to_search} - Might be a card name")
-                await message.channel.send(f"Search Request for {card_to_search} seems malformed.")
-                                #results = db_cur.execute("SELECT * FROM cards LEFT OUTER JOIN card_types on cards.card_type_id = card_types.card_type_id LEFT OUTER JOIN rarity on cards.rarity_id = rarity.rarity_id LEFT OUTER JOIN sets on cards.set_id = sets.set_id where card_name = ? COLLATE NOCASE", [card_to_search])
+                logger.info(f"Malformed request for Card Search: {card_to_search} - Might be a card name, trying to search via name.")
+
+                #ORDER BY sets.set_year_released, cards.card_set_number
+                results = db_cur.execute("SELECT * FROM cards LEFT OUTER JOIN card_types on cards.card_type_id = card_types.card_type_id LEFT OUTER JOIN rarity on cards.rarity_id = rarity.rarity_id LEFT OUTER JOIN sets on cards.set_id = sets.set_id where card_name = ? COLLATE NOCASE", [card_to_search])
+                the_results = results.fetchall()
+                too_many_results = len(the_results) > 10
+                if not too_many_results:
+                    result_counter = 0
+                    search_results_output = ""
+                    for card_result in the_results:
+                        result_counter = result_counter + 1
+                        logger.info(f"Search Result {result_counter}: {card_result}")
+                        the_card_number = card_result[1]
+                        the_card_set = card_result[26]
+                        the_card_set_short_name = card_result[25]
+                        if the_card_set_short_name != '19':
+                            search_results_output = f"{search_results_output} {the_card_number}-{the_card_set_short_name},"
+                        else:
+                            search_results_output = f"{search_results_output} {the_card_number},"
+                    search_results_output = search_results_output[:-1]
+                    if len(the_results) > 0:
+                        await message.channel.send(f"Search Request for '{card_to_search}' returned the following {len(the_results)} result(s):{search_results_output}")
+                    else:
+                        #Possibly in this case execute a fuzzy search?  https://www.datacamp.com/tutorial/fuzzy-string-python
+                        await message.channel.send(f"Search Request for '{card_to_search}' returned no results.")
+                else:
+                    logger.info(f"Too many results returned for {card_to_search}.")
+                    await message.channel.send(f"Search Request for '{card_to_search}' returned too many results {len(the_results)}.  Try a different search.")
+
+                #### TRY VIA THE PLAYER NAME
+                
     #else:
         #await message.channel.send(f"No cards to search here....")
 
