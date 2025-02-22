@@ -57,12 +57,12 @@ intents.message_content = True
 
 botCache = BotCache()
 
-bot = commands.Bot(command_prefix=['!', '^'], intents=intents) #command_prefix can be one item - i.e. '!' or a list - i.e. ['!','#','$']
+bot = commands.Bot(command_prefix=['^'], intents=intents) #command_prefix can be one item - i.e. '!' or a list - i.e. ['!','#','$']
 
-card_fetch_pattern = re.compile("\[\[(\w[\w'\- ]*)\]\]", re.IGNORECASE | re.MULTILINE)
-card_fetch_pattern_2 = re.compile("!(\w[\w'\- ]*)!", re.IGNORECASE | re.MULTILINE)
+card_fetch_pattern = re.compile("\[\[(\w[\w'\- ]*\$?)\]\]", re.IGNORECASE | re.MULTILINE)
+card_fetch_pattern_2 = re.compile("!(\w[\w'\- ]*\$?)!", re.IGNORECASE | re.MULTILINE)
 
-card_set_number_pattern = re.compile(r"^([a-zA-Z]{1,2}\d+)-([A-Z\d]+)$")
+card_set_number_pattern = re.compile(r"^([a-zA-Z]{1,2}\d+)-([A-Z\d]+)\$?$")
 
 db_con = None
 db_cur = None
@@ -122,7 +122,7 @@ async def on_message(message):
         counter = 0
         #await message.channel.send(f"You want me to look up {len(cards_to_search)} cards?")
         for card_to_search in cards_to_search:
-
+            large_card = False
             card_set_number_pattern_matches = card_set_number_pattern.findall(card_to_search)
 
             if len(card_set_number_pattern_matches) > 0:
@@ -132,6 +132,10 @@ async def on_message(message):
                 if the_card_set_short_name in ['19', '20', '21', '22', 'MCI']:
 
                     card_to_query = card_to_search
+
+                    if card_to_query[-1] == "$":
+                        large_card = True
+                        card_to_query = card_to_query[:-1]
 
                     counter = counter + 1
                     if counter > 5:
@@ -201,40 +205,41 @@ async def on_message(message):
                         if the_card_sub_type != "":
                             the_card_sub_type = f" - {the_card_sub_type}"
 
-                        embed = discord.Embed(title=f"{the_card_name} ({the_card_number}){the_card_special_text}", color=the_card_color) #can also have url, description, color
-                        #embed.set_author(name=the_card_name)#, icon_url=the_set_icon_url) #icon_url is actually a url
+                        if large_card:
+                            embed = discord.Embed(title=f"{the_card_name} ({the_card_number}){the_card_special_text}", color=the_card_color) #can also have url, description, color
+                            with io.BytesIO(the_card_image.tobytes()) as image_binary:
+                                the_card_image.save(image_binary, 'PNG')
+                                image_binary.seek(0)
+                                await message.channel.send(file=discord.File(fp=image_binary, filename='image.png'), embed=embed)
 
-                        #If we want the thumbnail of the card (default)
-                        embed.set_thumbnail(url=the_thumbnail_url)
+                        else:
+                            #If we want the thumbnail of the card (default)
+                            embed = discord.Embed(title=f"{the_card_name} ({the_card_number}){the_card_special_text}", color=the_card_color) #can also have url, description, color
+                            #embed.set_author(name=the_card_name)#, icon_url=the_set_icon_url) #icon_url is actually a url
+                            embed.set_thumbnail(url=the_thumbnail_url)
 
-                        if the_card_type == 'Player':
-                            embed.add_field(name="Rating", value=f"{the_card_rating}", inline=True)
-                            embed.add_field(name="Position", value=f"{the_card_position}", inline=True)
-                            embed.add_field(name="Side", value=f"{the_card_side}", inline=True)
-                            embed.add_field(name="Team", value=f"{the_card_team}", inline=False)
-                            embed.add_field(name="Ability", value=f"{the_card_ability}", inline=False)
+                            if the_card_type == 'Player':
+                                embed.add_field(name="Rating", value=f"{the_card_rating}", inline=True)
+                                embed.add_field(name="Position", value=f"{the_card_position}", inline=True)
+                                embed.add_field(name="Side", value=f"{the_card_side}", inline=True)
+                                embed.add_field(name="Team", value=f"{the_card_team}", inline=False)
+                                embed.add_field(name="Ability", value=f"{the_card_ability}", inline=False)
 
-                        if the_card_type == 'Play':
-                            embed.add_field(name="Strength", value=f"{the_strength}", inline=True)
-                            embed.add_field(name="Time Units", value=f"{the_time_units}", inline=True)
-                            embed.add_field(name="Offense", value=f"{the_offensive_play}", inline=False)
-                            embed.add_field(name="Defense", value=f"{the_defensive_play}", inline=False)
+                            if the_card_type == 'Play':
+                                embed.add_field(name="Strength", value=f"{the_strength}", inline=True)
+                                embed.add_field(name="Time Units", value=f"{the_time_units}", inline=True)
+                                embed.add_field(name="Offense", value=f"{the_offensive_play}", inline=False)
+                                embed.add_field(name="Defense", value=f"{the_defensive_play}", inline=False)
 
-                        if the_card_type == 'Action':
-                            embed.add_field(name="Effect", value=f"{the_card_effect}", inline=False)
-                            embed.add_field(name="Timing", value=f"{the_card_timing}", inline=False)
+                            if the_card_type == 'Action':
+                                embed.add_field(name="Effect", value=f"{the_card_effect}", inline=False)
+                                embed.add_field(name="Timing", value=f"{the_card_timing}", inline=False)
 
-                        embed.add_field(name="Card Type", value=f"{the_card_type}{the_card_sub_type}", inline=False)
-                        embed.add_field(name="Set", value=f"{the_card_set} ({the_set_total_cards})", inline=False)
-                        embed.set_footer(text=f'Card Search took {endTime - startTime:.5f}s')
-
-                        #If we want the card bigger
-                        # with io.BytesIO(the_card_image.tobytes()) as image_binary:
-                        #     the_card_image.save(image_binary, 'PNG')
-                        #     image_binary.seek(0)
-                        #     await message.channel.send(file=discord.File(fp=image_binary, filename='image.png'), embed=embed)
-
-                        await message.channel.send(embed=embed)
+                            embed.add_field(name="Card Type", value=f"{the_card_type}{the_card_sub_type}", inline=False)
+                            embed.add_field(name="Set", value=f"{the_card_set} ({the_set_total_cards})", inline=False)
+                            embed.set_footer(text=f'Card Search took {endTime - startTime:.5f}s')
+                            await message.channel.send(embed=embed)
+                            
                     else:
                         logger.info(f"No results for Card Search: {card_to_search}")
 
