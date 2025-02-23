@@ -8,6 +8,8 @@ import io
 
 import nflfive as nfl5
 
+import logging
+
 class BotCache:
     paniniCardImageCache = {}
     paniniCardImageCacheStats = {'cacheHit': 0, 'cacheMiss': 0}
@@ -16,6 +18,8 @@ class BotCache:
     imageCache = {}
     imageCacheStats = {'cacheHit': 0, 'cacheMiss': 0}
     imageFetchStats = {'fetchCount': 0, 'fetchFailures': 0, 'timeFetching': 0}
+
+    logger = logging.getLogger()
 
     def __init__(self):
         theVariable = 0
@@ -26,23 +30,23 @@ class BotCache:
         theCardImage = None
         
         cacheKey = f"{the_card_number}{the_card_set}"
-
+        # logger.info(f"Cache check on '{theCardImageUrl}'")
         if(cacheKey not in self.paniniCardImageCache):
-            print(f"Cache miss fetching {theCardImageUrl}")
+            # logger.info(f"Cache MISS locating '{theCardImageUrl}'")
             self.paniniCardImageCacheStats['cacheMiss'] = self.paniniCardImageCacheStats['cacheMiss'] + 1
             theCardImage = self.fetchCardImage(theCardImageUrl)
-            print(f"Caching with Key {cacheKey}")
+            # logger.info(f"Caching data with Key {cacheKey}")
             self.paniniCardImageCache[cacheKey] = theCardImage
 
         else:
-            print(f"Cache hit pulling from {cacheKey}")
+            # logger.info(f"Cache HIT pulling data with Key {cacheKey}")
             self.paniniCardImageCacheStats['cacheHit'] = self.paniniCardImageCacheStats['cacheHit'] + 1
             theCardImage = self.paniniCardImageCache[cacheKey]
 
         return theCardImage
 
     def fetchCardImage(self, theCardImageUrl):
-
+        # logger.info(f"Attempting to fetch image from: {theCardImageUrl}")
         cardImage = Image.new('RGBA', (1, 1))
 
         startTime = time.time()
@@ -51,14 +55,14 @@ class BotCache:
 
         imageDataResults = requests.get(theCardImageUrl, stream=True)
         if(imageDataResults.status_code == requests.codes.ok):
-            print(f"got data!")
+            # logger.info(f"got data from a request to {theCardImageUrl}")
             cardImage = Image.open(imageDataResults.raw)
         else:
             self.imageFetchStats['fetchFailures'] = self.imageFetchStats['fetchFailures'] + 1
             cardImage = Image.new('RGBA', (1, 1))
 
         endTime = time.time()
-
+        # logger.info(f"Image Fetch of {theCardImageUrl} took {endTime-startTime:.5f}s")
         self.imageFetchStats['timeFetching'] = self.imageFetchStats['timeFetching'] + (endTime - startTime)
 
         return cardImage
