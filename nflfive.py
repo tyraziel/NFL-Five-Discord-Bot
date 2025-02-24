@@ -7,7 +7,7 @@ def generateUrl(the_card_number, the_card_type, the_card_set, the_card_special_t
 
   elif the_card_set == "NFL Five 2020":
     if the_card_type == "Player":
-      if the_card_number[:1].lower() == "rk":
+      if the_card_number[:2].lower() == "rk":
         the_card_image_url = f"https://paninigames.com/wp-content/uploads/2020/08/{the_card_number.lower()}_50855_1142f0_rookie_ccg.jpg"
       else:
         the_card_image_url = f"https://paninigames.com/wp-content/uploads/2020/08/{the_card_number.lower()}_50854_1142f0_player_ccg.jpg"
@@ -18,7 +18,7 @@ def generateUrl(the_card_number, the_card_type, the_card_set, the_card_special_t
 
   elif the_card_set == "NFL Five 2021":
     if the_card_type == "Player":
-      if the_card_number[:1].lower() == "rk":
+      if the_card_number[:2].lower() == "rk":
         the_card_image_url = f"https://paninigames.com/wp-content/uploads/2021/07/{the_card_number.lower()}_en_64706_1269f0_rookie.jpg"
       elif the_card_special_text == 'Superstar':
         the_card_image_url = f"https://paninigames.com/wp-content/uploads/2021/07/{the_card_number.lower()}_en_64835_1269f0_superscard.jpg"
