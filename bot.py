@@ -294,15 +294,17 @@ async def on_message(message):
                     fuzz_partial_ratio = process.extract(card_to_search, all_card_names, scorer=fuzz.partial_ratio)
                     fuzz_token_sort_ratio = process.extract(card_to_search, all_card_names, scorer=fuzz.token_sort_ratio)
                     fuzz_token_set_ratio = process.extract(card_to_search, all_card_names, scorer=fuzz.token_set_ratio)
-                    fuzz_end_time = time.time()
-
-                    logger.info(f"Fuzzy search for '{card_to_search}' completed (took {fuzz_end_time - fuzz_start_time:.5f}s), processing results.")
-
+                    
                     fuzz_results = []
                     fuzz_results.extend(fuzz_ratio)
                     fuzz_results.extend(fuzz_partial_ratio)
                     fuzz_results.extend(fuzz_token_sort_ratio)
                     fuzz_results.extend(fuzz_token_set_ratio)
+
+                    fuzz_end_time = time.time()
+
+                    logger.info(f"Fuzzy '{card_to_search}' search results: {fuzz_results}")
+                    logger.info(f"Fuzzy search for '{card_to_search}' completed (took {fuzz_end_time - fuzz_start_time:.5f}s), processing results.")
 
                     high_confidence = [] #threshold of a score of 80
                     medium_confidence = [] #threshold of a score of 60
