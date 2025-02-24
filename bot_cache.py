@@ -30,23 +30,23 @@ class BotCache:
         theCardImage = None
         
         cacheKey = f"{the_card_number}{the_card_set}"
-        # logger.info(f"Cache check on '{theCardImageUrl}'")
+        print(f"Cache check on '{theCardImageUrl}'")
         if(cacheKey not in self.paniniCardImageCache):
-            # logger.info(f"Cache MISS locating '{theCardImageUrl}'")
+            print(f"Cache MISS locating '{theCardImageUrl}'")
             self.paniniCardImageCacheStats['cacheMiss'] = self.paniniCardImageCacheStats['cacheMiss'] + 1
             theCardImage = self.fetchCardImage(theCardImageUrl)
-            # logger.info(f"Caching data with Key {cacheKey}")
+            print(f"Caching data with Key {cacheKey}")
             self.paniniCardImageCache[cacheKey] = theCardImage
 
         else:
-            # logger.info(f"Cache HIT pulling data with Key {cacheKey}")
+            print(f"Cache HIT pulling data with Key {cacheKey}")
             self.paniniCardImageCacheStats['cacheHit'] = self.paniniCardImageCacheStats['cacheHit'] + 1
             theCardImage = self.paniniCardImageCache[cacheKey]
 
         return theCardImage
 
     def fetchCardImage(self, theCardImageUrl):
-        # logger.info(f"Attempting to fetch image from: {theCardImageUrl}")
+        print(f"Attempting to fetch image from: {theCardImageUrl}")
         cardImage = Image.new('RGBA', (1, 1))
 
         startTime = time.time()
@@ -55,14 +55,14 @@ class BotCache:
 
         imageDataResults = requests.get(theCardImageUrl, stream=True)
         if(imageDataResults.status_code == requests.codes.ok):
-            # logger.info(f"got data from a request to {theCardImageUrl}")
+            print(f"got data from a request to {theCardImageUrl}")
             cardImage = Image.open(imageDataResults.raw)
         else:
             self.imageFetchStats['fetchFailures'] = self.imageFetchStats['fetchFailures'] + 1
             cardImage = Image.new('RGBA', (1, 1))
 
         endTime = time.time()
-        # logger.info(f"Image Fetch of {theCardImageUrl} took {endTime-startTime:.5f}s")
+        print(f"Image Fetch of {theCardImageUrl} took {endTime-startTime:.5f}s")
         self.imageFetchStats['timeFetching'] = self.imageFetchStats['timeFetching'] + (endTime - startTime)
 
         return cardImage
